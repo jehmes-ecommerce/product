@@ -1,0 +1,22 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: product-ms
+  data:
+    mongodb:
+      database: ecommerce
+      username: admin
+      password: admin
+      authentication-database: admin
+      port: 27018
+      host: localhost
+      auto-index-creation: true
+logging:
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+  output:
+    ansi:
+      enabled: always
