@@ -1,8 +1,10 @@
 package com.ecommerce.products.services;
 
+import com.ecommerce.products.dtos.ProductDto;
 import com.ecommerce.products.models.Product;
 import com.ecommerce.products.repositories.ProductRepository;
 import com.ecommerce.products.services.interfaces.ProductService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +19,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product save(Product product) {
-        return productRepository.save(product);
+    public Product save(ProductDto productDto) {
+        var newProduct = new Product();
+        BeanUtils.copyProperties(productDto, newProduct);
+        return productRepository.save(newProduct);
     }
 
     @Override
