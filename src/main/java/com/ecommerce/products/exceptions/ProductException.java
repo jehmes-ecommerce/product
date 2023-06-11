@@ -1,10 +1,10 @@
 package com.ecommerce.products.exceptions;
 
-public class NotFoundException extends Exception{
+public class ProductException extends Exception{
 
     private final String msg;
 
-    public NotFoundException(String msg) {
+    public ProductException(String msg) {
         this.msg = msg;
     }
 

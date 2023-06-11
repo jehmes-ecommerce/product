@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: product
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
   data:
     mongodb:
       database: ecommerce
@@ -20,3 +25,13 @@ logging:
   output:
     ansi:
       enabled: always
+
+ecommerce:
+  broker:
+    exchange:
+      orderProductCommand: order-product
+    queue:
+      orderProductRequest: order-product-request
+    key:
+      bindOrderProductRequestCommand: order-product-request
+      bindOrderProductReplyCommand: order-product-reply

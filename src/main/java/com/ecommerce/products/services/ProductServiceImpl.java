@@ -1,7 +1,9 @@
 package com.ecommerce.products.services;
 
+import com.ecommerce.products.dtos.OrderItemsDto;
 import com.ecommerce.products.dtos.ProductDto;
-import com.ecommerce.products.exceptions.NotFoundException;
+import com.ecommerce.products.enums.ProductExceptionMessage;
+import com.ecommerce.products.exceptions.ProductException;
 import com.ecommerce.products.models.Product;
 import com.ecommerce.products.repositories.ProductRepository;
 import com.ecommerce.products.services.interfaces.ProductService;
@@ -32,21 +34,34 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product findById(String id) {
-        return productRepository.findById(id).orElseThrow(RuntimeException::new);
+    public Product findById(String id) throws ProductException {
+        return productRepository.findById(id).orElseThrow(() -> new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage()));
     }
 
     @Override
-    public void deleteById(String id) throws NotFoundException {
-        Product product = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product Not Found"));
+    public void deleteById(String id) throws ProductException {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage()));
         productRepository.delete(product);
     }
 
     @Override
-    public Product update(Product product, String id) throws NotFoundException {
-        Product productFromDb = productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product Not Found"));
+    public Product update(Product product, String id) throws ProductException {
+        Product productFromDb = productRepository.findById(id).orElseThrow(() -> new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage()));
         productFromDb.setName(product.getName());
         productFromDb.setPrice(product.getPrice());
+        productFromDb.setQuantity(product.getQuantity());
         return productRepository.save(productFromDb);
+    }
+
+    @Override
+    public void subtractProduct(List<OrderItemsDto> products) throws ProductException {
+        for (OrderItemsDto product : products) {
+            Product productFromDb = findById(product.productId());
+            if (productFromDb.getQuantity() - product.quantity() < 0) {
+                throw new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage());
+            }
+            productFromDb.setQuantity(productFromDb.getQuantity() - product.quantity());
+            update(productFromDb, productFromDb.getProductId());
+        }
     }
 }
