@@ -35,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(String id) throws ProductException {
-        return productRepository.findById(id).orElseThrow(() -> new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage()));
+        return productRepository.findById(id).orElseThrow(() ->  new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage()));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
         for (OrderItemsDto product : products) {
             Product productFromDb = findById(product.productId());
             if (productFromDb.getQuantity() - product.quantity() < 0) {
-                throw new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage());
+                throw new ProductException(ProductExceptionMessage.OUT_OF_BOUNDS.getMessage());
             }
             productFromDb.setQuantity(productFromDb.getQuantity() - product.quantity());
             update(productFromDb, productFromDb.getProductId());
