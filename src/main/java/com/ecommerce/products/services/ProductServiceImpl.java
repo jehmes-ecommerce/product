@@ -35,6 +35,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(String id) throws ProductException {
+        var product = productRepository.findById(id);
+        if (product.isEmpty()) {
+            throw new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage());
+        }
         return productRepository.findById(id).orElseThrow(() ->  new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage()));
     }
 
@@ -49,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
         Product productFromDb = productRepository.findById(id).orElseThrow(() -> new ProductException(ProductExceptionMessage.NOT_FOUND.getMessage()));
         productFromDb.setName(product.getName());
         productFromDb.setPrice(product.getPrice());
-        productFromDb.setQuantity(product.getQuantity());
+        productFromDb.setQuantity(productFromDb.getQuantity());
         return productRepository.save(productFromDb);
     }
 

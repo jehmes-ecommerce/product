@@ -38,10 +38,10 @@ public class OrderProductRequest {
         } catch (ProductException e) {
             orderDto.setOrderStatus(OrderStatus.CANCELED.toString());
             orderDto.setProductsInStock(false);
-            orderDto.setMessage(e.getMsg());
+            orderDto.setMessage(e.getMessage());
             orderProductReply.publish(orderDto);
             e.printStackTrace();
-            log.error(e.getMsg());
+            log.error(e.getMessage());
             return;
         }
         orderDto.setProductsInStock(true);
